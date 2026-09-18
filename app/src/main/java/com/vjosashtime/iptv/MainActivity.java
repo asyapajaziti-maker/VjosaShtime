@@ -2,6 +2,7 @@ package com.vjosashtime.iptv;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -80,6 +81,8 @@ public class MainActivity extends Activity {
     private String selectedGroup = "Të gjitha";
     private boolean favoritesOnly = false;
     private String activeSection = "Live TV";
+    private String currentPlayingUrl = "";
+    private String currentPlayingName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,6 +264,13 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams playerP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(180));
         playerP.topMargin = dp(8);
         root.addView(playerView, playerP);
+
+        Button fullScreen = smallButton("⛶  FULL SCREEN");
+        fullScreen.setTextSize(12);
+        fullScreen.setOnClickListener(v -> openFullscreen());
+        LinearLayout.LayoutParams fullP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(42));
+        fullP.topMargin = dp(6);
+        root.addView(fullScreen, fullP);
 
         LinearLayout directRow = new LinearLayout(this);
         directRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -533,10 +543,25 @@ public class MainActivity extends Activity {
             toast("Linku nuk është i vlefshëm.");
             return;
         }
-        if (status != null) status.setText("Po luhet: " + name);
+        currentPlayingUrl = url;
+        currentPlayingName = name == null ? "Video" : name;
+        if (status != null) status.setText("Po luhet: " + currentPlayingName);
         player.setMediaItem(MediaItem.fromUri(Uri.parse(url)));
         player.prepare();
         player.play();
+    }
+
+    private void openFullscreen() {
+        if (!isHttpUrl(currentPlayingUrl)) {
+            toast("Luaj një kanal ose video fillimisht.");
+            return;
+        }
+        long position = player == null ? 0L : player.getCurrentPosition();
+        Intent intent = new Intent(this, FullscreenPlayerActivity.class);
+        intent.putExtra("url", currentPlayingUrl);
+        intent.putExtra("name", currentPlayingName);
+        intent.putExtra("position", position);
+        startActivity(intent);
     }
 
     private void updateFavoriteButton() {
@@ -605,6 +630,8 @@ public class MainActivity extends Activity {
         card.setPadding(dp(10), dp(16), dp(10), dp(16));
         card.setBackground(gradient(BLUE, PURPLE, 18));
         card.setOnClickListener(listener);
+        card.setFocusable(true);
+        card.setFocusableInTouchMode(false);
 
         TextView i = new TextView(this);
         i.setText(icon);
