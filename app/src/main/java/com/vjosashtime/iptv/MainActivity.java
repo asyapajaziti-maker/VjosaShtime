@@ -106,12 +106,45 @@ public class MainActivity extends Activity {
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
 
+        LinearLayout brand = new LinearLayout(this);
+        brand.setOrientation(LinearLayout.HORIZONTAL);
+        brand.setGravity(Gravity.CENTER_VERTICAL);
+        brand.setPadding(dp(2), 0, dp(8), 0);
+
+        TextView badge = new TextView(this);
+        badge.setText("VS");
+        badge.setTextColor(Color.WHITE);
+        badge.setTextSize(17);
+        badge.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        badge.setGravity(Gravity.CENTER);
+        badge.setLetterSpacing(0.08f);
+        badge.setBackground(gradient(BLUE_2, PURPLE, 15));
+        brand.addView(badge, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        LinearLayout wordmark = new LinearLayout(this);
+        wordmark.setOrientation(LinearLayout.VERTICAL);
+        wordmark.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams wordmarkP = new LinearLayout.LayoutParams(0, dp(54), 1f);
+        wordmarkP.leftMargin = dp(10);
+        brand.addView(wordmark, wordmarkP);
+
         TextView logo = new TextView(this);
-        logo.setText("VJOSA SHTIME");
+        logo.setText("VJOSA");
         logo.setTextColor(Color.WHITE);
-        logo.setTextSize(26);
+        logo.setTextSize(22);
         logo.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        header.addView(logo, new LinearLayout.LayoutParams(0, dp(58), 1f));
+        logo.setLetterSpacing(0.10f);
+        wordmark.addView(logo, fullWrap());
+
+        TextView logoSub = new TextView(this);
+        logoSub.setText("SHTIME  •  IPTV");
+        logoSub.setTextColor(BLUE_2);
+        logoSub.setTextSize(10);
+        logoSub.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        logoSub.setLetterSpacing(0.14f);
+        wordmark.addView(logoSub, fullWrap());
+
+        header.addView(brand, new LinearLayout.LayoutParams(0, dp(58), 1f));
 
         TextView profile = squareIcon("◉");
         header.addView(profile, new LinearLayout.LayoutParams(dp(48), dp(48)));
